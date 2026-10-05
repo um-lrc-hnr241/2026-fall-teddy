@@ -3,30 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Our Portfolio Site</title>
+  <title>Our Playroom — Group Portfolio</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
-    <p class="site-title"><a href="index.html">Our Portfolio Site</a></p>
+    <p class="site-title"><a href="index.html">Our Playroom</a></p>
     <nav aria-label="Main">
       <ul>
         <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="hosts.html">Meet the hosts</a></li>
+        <li><a href="builds.html">Builds &amp; essays</a></li>
+        <li><a href="programmer.html">Meet the programmer</a></li>
       </ul>
     </nav>
   </header>
 
   <main id="main">
-    <h1>Welcome</h1>
-    <p>This is your group's starter site. Nothing here is final.</p>
-    <p>Fill in your planning Doc, then leave a comment that starts with
-      <code>@agent build</code> to have the agent replace this page with your own.</p>
+    <section class="hero" aria-labelledby="welcome-heading">
+      <p class="eyebrow">A group portfolio</p>
+      <h1 id="welcome-heading">Welcome to our playroom</h1>
+      <p>We are the kids, and our builds are the objects. This is where we share what we make, the ideas behind it, and the people who bring it together.</p>
+      <p class="hero-links"><a class="button" href="builds.html">Explore our builds</a> <a class="text-link" href="hosts.html">Meet the hosts</a></p>
+    </section>
+
+    <section aria-labelledby="explore-heading">
+      <h2 id="explore-heading">Come on in</h2>
+      <div class="card-grid">
+        <article class="card card-blue">
+          <h3>Meet the hosts</h3>
+          <p>Get to know the group welcoming you into our creative space.</p>
+          <a href="hosts.html">Meet the hosts</a>
+        </article>
+        <article class="card card-orange">
+          <h3>Builds &amp; essays</h3>
+          <p>Explore our builds and the essays that share the thinking behind them.</p>
+          <a href="builds.html">See the builds page</a>
+        </article>
+        <article class="card card-green">
+          <h3>Meet the programmer</h3>
+          <p>Find out about the role of code in bringing this site together.</p>
+          <a href="programmer.html">Meet the programmer</a>
+        </article>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
-    <p>Built by our group with help from an AI agent.</p>
+    <p>Made by our group. Welcome to the playroom.</p>
   </footer>
 </body>
 </html>
