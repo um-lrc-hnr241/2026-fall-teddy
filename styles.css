@@ -194,6 +194,20 @@ main {
   margin-top: 1.25rem;
 }
 
+.photo-placeholder {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 2px dashed var(--muted);
+  border-radius: 0.5rem;
+  background: var(--blue);
+  color: var(--text);
+  text-align: center;
+  font-weight: 650;
+}
+
 .card {
   padding: 1.25rem;
   border: 1px solid var(--border);
