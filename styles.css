@@ -266,3 +266,43 @@ main {
     gap: 0.5rem 1rem;
   }
 }
+
+.playroom-hero {
+  position: relative;
+  overflow: hidden;
+  border-left-color: #a84712;
+  background-color: var(--blue);
+  background-image: linear-gradient(90deg, rgba(245, 251, 255, 0.97) 0%, rgba(245, 251, 255, 0.91) 52%, rgba(245, 251, 255, 0.3) 100%), url("images/Firefly_Gemini_Flash_a_symnbol_of_consciouness_where_the_brain_is_the_center_of_the_image._there_is_a_maze_913642.png");
+  background-position: center, center;
+  background-size: cover;
+}
+
+.playroom-hero::after {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 8rem;
+  height: 4rem;
+  border-radius: 0.35rem;
+  background: linear-gradient(90deg, #f5a06b 0 32%, transparent 32% 35%, #f7cf59 35% 66%, transparent 66% 69%, #c8e5c8 69% 100%);
+  box-shadow: 0 0.35rem 0 #a84712;
+  content: "";
+  pointer-events: none;
+}
+
+.playroom-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.playroom-hero .eyebrow {
+  color: #8a350d;
+}
+
+.playroom-hero .button {
+  background: #a84712;
+}
+
+.playroom-hero .button:hover {
+  background: #7c330e;
+}
