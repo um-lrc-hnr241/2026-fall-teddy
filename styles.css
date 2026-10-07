@@ -8,7 +8,7 @@
   --yellow: #f7cf59;
   --orange: #f5a06b;
   --green: #c8e5c8;
-  --max-width: 68rem;
+  --max-width: none;
 }
 
 *,
@@ -23,7 +23,9 @@ body {
   font-size: 1.125rem;
   line-height: 1.6;
   color: var(--text);
-  background: var(--background);
+  background-color: var(--background);
+  background-image: radial-gradient(circle at 8% 12%, rgba(245, 160, 107, 0.12), transparent 13rem), radial-gradient(circle at 92% 78%, rgba(200, 229, 200, 0.2), transparent 16rem), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M0 0h16v16h16v16h16M0 32h16v16M32 0v8h-8v16h16v-8h8' fill='none' stroke='%23174f7a' stroke-opacity='.12' stroke-width='3'/%3E%3C/svg%3E");
+  background-size: auto, auto, 4rem 4rem;
 }
 
 .site-header,
@@ -184,7 +186,9 @@ main::before {
   width: 7rem;
   height: 7rem;
   border: 2px solid rgba(23, 79, 122, 0.16);
-  background: repeating-linear-gradient(0deg, transparent 0 1.1rem, rgba(23, 79, 122, 0.14) 1.1rem 1.2rem), repeating-linear-gradient(90deg, transparent 0 1.1rem, rgba(23, 79, 122, 0.14) 1.1rem 1.2rem);
+  background-color: rgba(220, 239, 255, 0.65);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M0 0h16v16h16v16h16M0 32h16v16M32 0v8h-8v16h16v-8h8' fill='none' stroke='%23174f7a' stroke-opacity='.3' stroke-width='3'/%3E%3C/svg%3E");
+  background-size: 3rem 3rem;
   content: "";
   pointer-events: none;
 }
