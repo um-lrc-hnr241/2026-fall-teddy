@@ -84,6 +84,13 @@ video {
   height: auto;
 }
 
+main > section.card img {
+  display: block;
+  width: min(100%, 12rem);
+  height: auto;
+  border-radius: 0.5rem;
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
