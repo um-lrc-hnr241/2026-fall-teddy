@@ -397,3 +397,11 @@ main > * {
 .playroom-hero .button:hover {
   background: #7c330e;
 }
+
+main > .eyebrow + h1 + section.card {
+  text-align: center;
+}
+
+main > .eyebrow + h1 + section.card img {
+  margin-inline: auto;
+}
