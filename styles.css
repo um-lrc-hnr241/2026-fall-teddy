@@ -84,7 +84,8 @@ video {
   height: auto;
 }
 
-main > section.card img {
+main > section.card img,
+.card-grid .card img {
   display: block;
   width: min(100%, 12rem);
   height: auto;
@@ -176,6 +177,59 @@ nav a {
 
 .kids-submenu a:hover,
 .kids-submenu a:focus-visible {
+  background: #dcefff;
+}
+
+.builds-menu,
+.documents-menu {
+  position: relative;
+}
+
+.builds-submenu,
+.documents-submenu {
+  position: absolute;
+  z-index: 6;
+  top: 100%;
+  left: 0;
+  display: none;
+  min-width: 12rem;
+  margin: 0;
+  padding: 0.5rem;
+  border: 2px solid #174f7a;
+  border-radius: 0.65rem;
+  background: #fff9e7;
+  box-shadow: 0 0.35rem 0 #f5a06b;
+  list-style: none;
+}
+
+.builds-menu:hover > .builds-submenu,
+.builds-menu:focus-within > .builds-submenu {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.documents-submenu {
+  top: 0;
+  left: 100%;
+}
+
+.documents-menu:hover > .documents-submenu,
+.documents-menu:focus-within > .documents-submenu {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.builds-submenu a,
+.documents-submenu a {
+  display: block;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.35rem;
+}
+
+.builds-submenu a:hover,
+.builds-submenu a:focus-visible,
+.documents-submenu a:hover,
+.documents-submenu a:focus-visible {
   background: #dcefff;
 }
 
@@ -340,7 +394,9 @@ main > * {
 }
 
 @media (max-width: 38rem) {
-  .kids-submenu {
+  .kids-submenu,
+  .builds-submenu,
+  .documents-submenu {
     position: static;
     display: grid;
     min-width: 0;
