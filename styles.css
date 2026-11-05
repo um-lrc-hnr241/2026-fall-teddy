@@ -497,3 +497,32 @@ main > .eyebrow + h1 + section.card img {
     transition: none;
   }
 }
+
+.designer-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(8rem, 14rem);
+  align-items: start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.designer-intro .page-intro {
+  margin-bottom: 0;
+}
+
+.gell-portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0.35rem solid #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.4rem 1rem rgba(24, 42, 53, 0.18);
+  transform: rotate(2deg);
+}
+
+@media (max-width: 38rem) {
+  .designer-intro {
+    grid-template-columns: minmax(0, 1fr) minmax(6rem, 9rem);
+    gap: 0.75rem;
+  }
+}
