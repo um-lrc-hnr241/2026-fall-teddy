@@ -462,3 +462,38 @@ main > .eyebrow + h1 + section.card {
 main > .eyebrow + h1 + section.card img {
   margin-inline: auto;
 }
+
+.card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.card:hover,
+.card:focus-within {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.5rem 1rem rgba(24, 42, 53, 0.14);
+}
+
+.object-drawer {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 2px dashed var(--accent);
+  border-radius: 0.5rem;
+  background: rgba(220, 239, 255, 0.55);
+}
+
+.object-drawer summary {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.object-drawer summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
