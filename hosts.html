@@ -39,7 +39,7 @@
               </ul>
             </li>
             <li><a href="builds.html#build-2">Build 2</a></li>
-            <li><a href="builds.html#build-3">Build 3</a></li>
+            <li class="documents-menu"><a href="builds.html#build-3">Build 3</a><ul class="documents-submenu" aria-label="Build 3 essays"><li><a href="build-3-rebecca.html">Build 3 - Rebecca</a></li><li><a href="build-3-valentina.html">Build 3 - Valentina</a></li><li><a href="build-3-owen.html">Build 3 - Owen</a></li><li><a href="build-3-ravneet.html">Build 3 - Ravneet</a></li><li><a href="build-3-emily.html">Build 3 - Emily</a></li></ul></li>
           </ul>
         </li>
         <li><a href="programmer.html">Meet the interior designer</a></li>
@@ -58,14 +58,14 @@
     <section aria-labelledby="our-space-heading">
       <h2 id="our-space-heading">Meet the kids</h2>
       <p>We are the kids in the playroom. Choose a name to visit their page, where we can add a photo and a quick bio.</p>
-      <div class="card-grid">
+      <div class="card-grid kid-grid">
         <article class="card card-blue">
           <img src="images/Emily_Baby_Photo.JPEG" alt="Baby photo of Emily">
           <h3><a href="emily.html">Emily</a></h3>
         </article>
         <article class="card card-yellow">
-          <h3><a href="valentina.html">Valentina</a></h3>
           <img src="images/valentina_--__baby_photo.jpeg" alt="Baby photo of Valentina">
+          <h3><a href="valentina.html">Valentina</a></h3>
         </article>
         <article class="card card-orange">
           <div class="photo-placeholder">Add Amelia’s photo here</div>
@@ -76,8 +76,8 @@
           <h3><a href="ravneet.html">Ravneet</a></h3>
         </article>
         <article class="card card-blue">
-          <h3><a href="owen.html">Owen</a></h3>
           <img src="images/Owen_baby_photo.JPG" alt="Baby photo of Owen">
+          <h3><a href="owen.html">Owen</a></h3>
         </article>
         <article class="card card-yellow">
           <img src="images/Becca_Baby_Photo.JPG" alt="Baby photo of Rebecca">
@@ -85,10 +85,17 @@
         </article>
       </div>
     </section>
+
+    <section aria-labelledby="game-heading">
+      <h2 id="game-heading">Guess who? Baby photo edition</h2>
+      <p>Can you tell which kid is in each baby photo? Pick a name.</p>
+      <div id="guess-game" class="card card-yellow game-card"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <p>Made by our group. Welcome to the playroom.</p>
   </footer>
+  <script src="script.js" defer></script>
 </body>
 </html>
