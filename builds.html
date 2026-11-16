@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=our-builds.html">
   <title>Builds — Teddy</title>
+  <noscript><meta http-equiv="refresh" content="0; url=our-builds.html"></noscript>
 </head>
 <body>
   <p>Taking you to the <a href="our-builds.html">Builds page</a>…</p>
-  <script>location.replace('our-builds.html' + location.hash);</script>
+  <script>
+    var pages = { '#build-1': 'build-1.html', '#build-2': 'build-2.html', '#build-3': 'build-3.html' };
+    location.replace(pages[location.hash] || 'our-builds.html' + location.hash);
+  </script>
 </body>
 </html>
