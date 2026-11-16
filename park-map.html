@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builds Map — Teddy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .park-map{display:block;width:100%;height:auto;border:3px solid #8a5a2b;border-radius:1rem;background:#f4e4bf}
+    .trail{fill:none;stroke:#8a5a2b;stroke-width:4;stroke-dasharray:4 12;stroke-linecap:round}
+    .pin{cursor:pointer;outline:none}
+    .pin .dot{stroke:#fff;stroke-width:3}
+    .pin .ring{fill:none;stroke:transparent;stroke-width:4}
+    .pin:hover .ring,.pin:focus-visible .ring,.pin[aria-pressed="true"] .ring{stroke:#1d2a3a}
+    .pin text{font-family:inherit;text-anchor:middle;pointer-events:none}
+    .pin .num{fill:#fff;font-size:20px;font-weight:800}
+    .pin .name{fill:#4a2c0f;font-size:17px;font-weight:700}
+    .token{transition:transform 0.8s ease}
+    .map-panel{margin:1rem 0 1.5rem;padding:1.25rem 1.5rem;border:2px solid #8a5a2b;border-radius:0.75rem;background:#fff}
+    .map-panel h2{margin-top:0}
+    .map-panel .button.off{display:none}
+    .map-list{display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;padding:0;list-style:none;font-weight:650}
+    @media (prefers-reduced-motion:no-preference){.trail{animation:walk 1.6s linear infinite}}
+    @keyframes walk{to{stroke-dashoffset:-32}}
+    @media (prefers-reduced-motion:reduce){.token{transition:none}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="site-title"><a href="index.html">Teddy</a></p>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li class="kids-menu">
+          <a href="hosts.html">Meet the kids</a>
+          <ul class="kids-submenu" aria-label="Meet each kid">
+            <li><a href="owen.html">Owen</a></li>
+            <li><a href="valentina.html">Valentina</a></li>
+            <li><a href="rebecca.html">Rebecca</a></li>
+            <li><a href="emily.html">Emily</a></li>
+            <li><a href="ravneet.html">Ravneet</a></li>
+            <li><a href="amelia.html">Amelia</a></li>
+          </ul>
+        </li>
+        <li class="builds-menu">
+          <a href="park-map.html" aria-current="page">Builds</a>
+          <ul class="builds-submenu" aria-label="Build pages">
+            <li><a href="build-1.html">Build 1</a></li>
+            <li><a href="build-2.html">Build 2</a></li>
+            <li><a href="build-3.html">Build 3</a></li>
+          </ul>
+        </li>
+        <li><a href="programmer.html">Meet the interior designer</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <p class="eyebrow">Welcome to the park</p>
+    <h1>Builds Map</h1>
+    <div class="page-intro">
+      <p>Follow the trail through our builds. Click a location on the map to see what is there.</p>
+    </div>
+
+    <svg class="park-map" viewBox="0 0 800 440" role="group" aria-label="Map of the park with four build locations">
+      <path d="M0 440 L0 330 L90 270 L160 320 L230 250 L300 330 L330 440 Z" fill="#e3c88f"/>
+      <path d="M470 440 L520 340 L600 380 L680 300 L800 360 L800 440 Z" fill="#e3c88f"/>
+      <path class="trail" d="M110 330 C170 250 250 370 330 290 C410 210 470 290 560 210 C620 150 640 100 690 100"/>
+      <g class="token" id="token" style="transform:translate(110px,330px)">
+        <rect x="-9" y="-46" width="18" height="22" rx="3" fill="#c9ccd1" stroke="#555" stroke-width="2"/>
+        <line x1="-9" y1="-38" x2="9" y2="-38" stroke="#555" stroke-width="2"/>
+        <line x1="-9" y1="-31" x2="9" y2="-31" stroke="#555" stroke-width="2"/>
+      </g>
+      <g class="pin" id="pin-0" role="button" tabindex="0" aria-pressed="false" aria-label="Build 1, Sweetwater" transform="translate(110 330)">
+        <circle class="ring" r="30"/><circle class="dot" r="22" fill="#a84712"/><text class="num" y="7">1</text><text class="name" y="52">Sweetwater</text>
+      </g>
+      <g class="pin" id="pin-1" role="button" tabindex="0" aria-pressed="false" aria-label="Build 2, The Maze" transform="translate(330 290)">
+        <rect x="-34" y="-34" width="68" height="68" fill="none" stroke="#8a5a2b" stroke-width="3"/>
+        <rect x="-26" y="-26" width="52" height="52" fill="none" stroke="#8a5a2b" stroke-width="3"/>
+        <circle class="ring" r="30"/><circle class="dot" r="22" fill="#2b5486"/><text class="num" y="7">2</text><text class="name" y="62">The Maze</text>
+      </g>
+      <g class="pin" id="pin-2" role="button" tabindex="0" aria-pressed="false" aria-label="Build 3, The Mesa" transform="translate(560 210)">
+        <circle class="ring" r="30"/><circle class="dot" r="22" fill="#326b3d"/><text class="num" y="7">3</text><text class="name" y="52">The Mesa</text>
+      </g>
+      <g class="pin" id="pin-3" role="button" tabindex="0" aria-pressed="false" aria-label="Build 4, Past the Edge" transform="translate(690 100)">
+        <circle class="ring" r="30"/><circle class="dot" r="22" fill="#6b4a8a"/><text class="num" y="7">4</text><text class="name" y="52">Past the Edge</text>
+      </g>
+    </svg>
+
+    <div class="map-panel" aria-live="polite">
+      <h2 id="panel-title">Pick a location</h2>
+      <p id="panel-text">Tap a numbered pin on the map to see what is there.</p>
+      <a class="button off" id="panel-link" href="build-1.html">Enter</a>
+    </div>
+
+    <h2>Prefer a list?</h2>
+    <ul class="map-list">
+      <li><a href="build-1.html">Build 1</a></li>
+      <li><a href="build-2.html">Build 2</a></li>
+      <li><a href="build-3.html">Build 3</a></li>
+    </ul>
+  </main>
+
+  <footer class="site-footer">
+    <p>Made by our group. Welcome to the playroom.</p>
+  </footer>
+  <script src="script.js" defer></script>
+  <script>
+  (function () {
+    var places = [
+      { x: 110, y: 330, title: 'Build 1 · Sweetwater', text: 'Six essays asking how patterns, objects, and other people take part in consciousness, using Gell’s Art and Agency.', href: 'build-1.html', label: 'Enter Build 1' },
+      { x: 330, y: 290, title: 'Build 2 · The Maze', text: 'The group essay: Westworld’s hosts, the tin can, and the maze, read through Gell’s ideas about objects and agency.', href: 'build-2.html', label: 'Enter Build 2' },
+      { x: 560, y: 210, title: 'Build 3 · The Mesa', text: 'Five essays that each take one quality of consciousness, like narration, phenomenality, or reflexivity, and test it against Gell.', href: 'build-3.html', label: 'Enter Build 3' },
+      { x: 690, y: 100, title: 'Build 4 · Past the Edge', text: 'This part of the map is still unexplored. Check back soon.', href: '', label: '' }
+    ];
+    var pins = places.map(function (p, i) { return document.getElementById('pin-' + i); });
+    var token = document.getElementById('token');
+    var link = document.getElementById('panel-link');
+    function select(i) {
+      var p = places[i];
+      pins.forEach(function (el, j) { el.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+      token.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
+      document.getElementById('panel-title').textContent = p.title;
+      document.getElementById('panel-text').textContent = p.text;
+      if (p.href) { link.href = p.href; link.textContent = p.label; link.classList.remove('off'); }
+      else { link.classList.add('off'); }
+    }
+    pins.forEach(function (el, i) {
+      el.addEventListener('click', function () { select(i); });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
