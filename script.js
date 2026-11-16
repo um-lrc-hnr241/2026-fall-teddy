@@ -1,4 +1,13 @@
 (function () {
+  /* 0. Menu and list links open each build as one page with tabs (one-page links) */
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var h = a.getAttribute('href');
+    var m = h.match(/^build-([13])-([a-z]+)\.html$/);
+    if (m) { a.setAttribute('href', 'build-' + m[1] + '.html#' + m[2]); return; }
+    m = h.match(/^(?:builds|our-builds|all-builds)\.html#build-([123])$/);
+    if (m) a.setAttribute('href', 'build-' + m[1] + '.html');
+  });
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* 1. Cards fade and slide in as you scroll */
