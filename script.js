@@ -8,7 +8,7 @@
     if (m) a.setAttribute('href', 'build-' + m[1] + '.html');
   });
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('nav[aria-label="Main"] > ul').forEach(function (ul) { if (ul.querySelector('a[href="word-web.html"]')) return; var li = document.createElement('li'); var a = document.createElement('a'); a.href = 'word-web.html'; a.textContent = 'Word web'; if (location.pathname.indexOf('word-web') > -1) a.setAttribute('aria-current', 'page'); li.appendChild(a); ul.insertBefore(li, ul.lastElementChild); }); var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* 1. Cards fade and slide in as you scroll */
   if (!reduceMotion && 'IntersectionObserver' in window) {
