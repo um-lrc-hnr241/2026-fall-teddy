@@ -16,6 +16,10 @@
     .pin .num{fill:#fff;font-size:20px;font-weight:800}
     .pin .name{fill:#4a2c0f;font-size:14px;font-weight:700}
     .pin.soon .dot{opacity:0.7}
+    .pin.fog .dot{opacity:0.35}
+    .pin .haze{fill:#fff;opacity:0.6;filter:url(#blur)}
+    .pin:not(.fog) .haze{display:none}
+    .explored-bar{display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem;margin:0 0 1rem;font-weight:700}
     .token{transition:transform 0.8s ease}
     .map-panel{margin:1rem 0 1.5rem;padding:1.25rem 1.5rem;border:2px solid #8a5a2b;border-radius:0.75rem;background:#fff}
     .map-panel h2{margin-top:0}
@@ -65,7 +69,10 @@
       <p>Follow the trail through our builds. Click a location on the map to see what is there.</p>
     </div>
 
+    <p class="explored-bar"><span id="count">0 of 8 explored</span> <button type="button" class="button" id="reset">Start over</button></p>
+
     <svg class="park-map" id="map" viewBox="0 0 800 440" role="group" aria-label="Map of the park with eight build locations">
+      <defs><filter id="blur"><feGaussianBlur stdDeviation="9"/></filter></defs>
       <path d="M0 440 L0 330 L90 270 L160 320 L230 250 L300 330 L330 440 Z" fill="#e3c88f"/>
       <path d="M470 440 L520 400 L600 420 L680 380 L800 410 L800 440 Z" fill="#e3c88f"/>
       <path class="trail" d="M90 360 C110 270 150 250 200 250 C260 250 270 350 320 350 C370 350 370 230 410 230 C460 230 450 340 500 340 C550 340 540 210 590 210 C640 210 630 320 690 320 C750 320 750 90 640 90"/>
@@ -83,6 +90,7 @@
       <li><a href="build-2.html">Build 2</a></li>
       <li><a href="build-3.html">Build 3</a></li>
       <li>Builds 4 to 8: still unexplored</li>
+      <li><a href="word-web.html">Word web</a></li>
     </ul>
   </main>
 
@@ -112,19 +120,35 @@
       if (text) n.textContent = text;
       return n;
     }
+    var seen = [];
+    try { seen = JSON.parse(localStorage.getItem('park-explored') || '[]'); } catch (e) { seen = []; }
+    var names = [];
     var pins = places.map(function (p, i) {
-      var g = mk('g', { 'class': 'pin' + (p.href ? '' : ' soon'), role: 'button', tabindex: '0', 'aria-pressed': 'false', 'aria-label': 'Build ' + (i + 1) + ', ' + p.name, transform: 'translate(' + p.x + ' ' + p.y + ')' });
+      var g = mk('g', { role: 'button', tabindex: '0', 'aria-pressed': 'false', transform: 'translate(' + p.x + ' ' + p.y + ')' });
       if (i === 1) {
         g.appendChild(mk('rect', { x: -34, y: -34, width: 68, height: 68, fill: 'none', stroke: '#8a5a2b', 'stroke-width': 3 }));
         g.appendChild(mk('rect', { x: -26, y: -26, width: 52, height: 52, fill: 'none', stroke: '#8a5a2b', 'stroke-width': 3 }));
       }
+      g.appendChild(mk('circle', { 'class': 'haze', r: 46 }));
       g.appendChild(mk('circle', { 'class': 'ring', r: 30 }));
       g.appendChild(mk('circle', { 'class': 'dot', r: 22, fill: colors[i % 4] }));
       g.appendChild(mk('text', { 'class': 'num', y: 7 }, String(i + 1)));
-      g.appendChild(mk('text', { 'class': 'name', y: i === 1 ? 62 : 52 }, p.name));
+      var nm = mk('text', { 'class': 'name', y: i === 1 ? 62 : 52 });
+      g.appendChild(nm);
+      names.push(nm);
       map.appendChild(g);
       return g;
     });
+    function paint() {
+      pins.forEach(function (g, i) {
+        var known = seen.indexOf(i) > -1;
+        g.setAttribute('class', 'pin' + (places[i].href ? '' : ' soon') + (known ? '' : ' fog'));
+        g.setAttribute('aria-label', 'Build ' + (i + 1) + (known ? ', ' + places[i].name : ', not explored yet'));
+        names[i].textContent = known ? places[i].name : '???';
+      });
+      document.getElementById('count').textContent = seen.length + ' of ' + places.length + ' explored';
+    }
+    function save() { try { localStorage.setItem('park-explored', JSON.stringify(seen)); } catch (e) {} }
     var token = mk('g', { 'class': 'token', style: 'transform:translate(90px,360px)' });
     token.appendChild(mk('rect', { x: -9, y: -46, width: 18, height: 22, rx: 3, fill: '#c9ccd1', stroke: '#555', 'stroke-width': 2 }));
     token.appendChild(mk('line', { x1: -9, y1: -38, x2: 9, y2: -38, stroke: '#555', 'stroke-width': 2 }));
@@ -133,6 +157,8 @@
     var link = document.getElementById('panel-link');
     function select(i) {
       var p = places[i];
+      if (seen.indexOf(i) < 0) { seen.push(i); save(); }
+      paint();
       pins.forEach(function (el, j) { el.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
       token.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
       document.getElementById('panel-title').textContent = 'Build ' + (i + 1) + ' · ' + p.name;
@@ -140,6 +166,15 @@
       if (p.href) { link.href = p.href; link.textContent = 'Enter Build ' + (i + 1); link.classList.remove('off'); }
       else { link.classList.add('off'); }
     }
+    document.getElementById('reset').addEventListener('click', function () {
+      seen = []; save(); paint();
+      token.style.transform = 'translate(' + places[0].x + 'px,' + places[0].y + 'px)';
+      pins.forEach(function (el) { el.setAttribute('aria-pressed', 'false'); });
+      document.getElementById('panel-title').textContent = 'Pick a location';
+      document.getElementById('panel-text').textContent = 'Tap a numbered pin on the map to see what is there.';
+      link.classList.add('off');
+    });
+    paint();
     pins.forEach(function (el, i) {
       el.addEventListener('click', function () { select(i); });
       el.addEventListener('keydown', function (e) {
