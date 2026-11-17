@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Word web — Teddy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cloud{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.6rem 1rem;padding:1.5rem 1rem;margin:0 0 1rem;border:2px solid #8a5a2b;border-radius:1rem;background:#f4e4bf}
+    .word{padding:0.2rem 0.7rem;border:2px solid transparent;border-radius:999px;background:transparent;color:#2b2113;font:inherit;font-weight:700;line-height:1.2;cursor:pointer;transition:opacity 0.3s ease}
+    .word:hover,.word:focus-visible{border-color:#1d2a3a}
+    .word[aria-pressed="true"]{background:#fff;border-color:#1d2a3a;box-shadow:0 0.2rem 0 #a84712}
+    .word.dim{opacity:0.35}
+    .web-panel{padding:1.25rem 1.5rem;border:2px solid #8a5a2b;border-radius:0.75rem;background:#fff}
+    .web-panel h2{margin-top:0}
+    .web-panel ul{padding-left:1.2rem}
+    @media (prefers-reduced-motion:reduce){.word{transition:none}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="site-title"><a href="index.html">Teddy</a></p>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li class="kids-menu">
+          <a href="hosts.html">Meet the kids</a>
+          <ul class="kids-submenu" aria-label="Meet each kid">
+            <li><a href="owen.html">Owen</a></li>
+            <li><a href="valentina.html">Valentina</a></li>
+            <li><a href="rebecca.html">Rebecca</a></li>
+            <li><a href="emily.html">Emily</a></li>
+            <li><a href="ravneet.html">Ravneet</a></li>
+            <li><a href="amelia.html">Amelia</a></li>
+          </ul>
+        </li>
+        <li class="builds-menu">
+          <a href="park-map.html">Builds</a>
+          <ul class="builds-submenu" aria-label="Build pages">
+            <li><a href="build-1.html">Build 1</a></li>
+            <li><a href="build-2.html">Build 2</a></li>
+            <li><a href="build-3.html">Build 3</a></li>
+          </ul>
+        </li>
+        <li><a href="programmer.html">Meet the interior designer</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <p class="eyebrow">Ideas made visible</p>
+    <h1>Word web</h1>
+    <div class="page-intro">
+      <p>Bigger words show up more often across all our essays. Click a word to see which essays use it. Words that show up in the same essays stay bright.</p>
+    </div>
+    <div class="cloud" id="cloud" role="group" aria-label="Key words from the essays"></div>
+    <div class="web-panel" aria-live="polite">
+      <h2 id="web-title">Pick a word</h2>
+      <p id="web-text">Click any word above to see where it appears.</p>
+      <ul id="web-list"></ul>
+    </div>
+    <p><a href="park-map.html">Back to the map</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Made by our group. Welcome to the playroom.</p>
+  </footer>
+  <script src="script.js" defer></script>
+  <script>
+  (function () {
+    var data = {"essays":[["Build 1 · Rebecca","build-1.html#rebecca"],["Build 1 · Amelia","build-1.html#amelia"],["Build 1 · Ravneet","build-1.html#ravneet"],["Build 1 · Owen","build-1.html#owen"],["Build 1 · Valentina","build-1.html#valentina"],["Build 1 · Emily","build-1.html#emily"],["Build 2 · Group","build-2.html"],["Build 3 · Rebecca","build-3.html#rebecca"],["Build 3 · Valentina","build-3.html#valentina"],["Build 3 · Owen","build-3.html#owen"],["Build 3 · Ravneet","build-3.html#ravneet"],["Build 3 · Emily","build-3.html#emily"]],"words":[["consciousness",[15,19,6,23,13,7,20,3,15,5,3,3]],["object",[18,10,4,3,10,0,16,19,11,9,12,3]],["person",[2,8,17,13,17,0,3,10,5,3,12,1]],["pattern",[0,13,15,0,0,12,2,7,1,9,15,17]],["agency",[11,3,1,6,15,0,6,2,9,2,11,1]],["art",[1,1,2,1,11,0,2,4,39,0,1,0]],["action",[2,5,12,5,1,2,5,4,3,0,1,1]],["intention",[0,0,6,0,5,5,1,0,14,0,4,3]],["demon",[0,0,0,0,0,28,1,5,0,0,0,0]],["control",[0,3,2,3,2,6,4,0,1,0,0,2]],["mind",[1,3,1,7,2,2,0,4,2,0,0,0]],["perception",[4,2,0,0,2,0,1,0,0,3,2,8]],["awareness",[0,0,0,0,0,2,0,0,1,0,8,9]],["experience",[1,1,0,1,1,0,2,0,1,7,0,2]],["memory",[0,0,1,0,6,0,4,4,1,0,0,0]],["social",[2,1,4,2,0,0,3,0,2,0,1,0]],["attention",[0,4,0,0,0,6,2,0,0,0,0,2]],["body",[0,0,4,2,4,0,0,1,0,0,1,0]],["trap",[0,0,0,0,1,6,0,2,0,0,0,3]],["maze",[0,0,1,0,0,0,6,1,0,0,0,3]],["distributed",[0,0,0,2,3,0,0,2,4,0,0,0]],["choice",[0,1,0,0,0,2,2,0,0,0,0,0]]]};
+    var cloud = document.getElementById('cloud');
+    var totals = data.words.map(function (w) { return w[1].reduce(function (a, b) { return a + b; }, 0); });
+    var max = Math.max.apply(null, totals), min = Math.min.apply(null, totals);
+    var buttons = data.words.map(function (w, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'word';
+      b.textContent = w[0];
+      b.setAttribute('aria-pressed', 'false');
+      b.style.fontSize = (1 + 1.5 * (totals[i] - min) / (max - min)).toFixed(2) + 'rem';
+      b.addEventListener('click', function () { pick(i); });
+      cloud.appendChild(b);
+      return b;
+    });
+    function inEssays(i) {
+      return data.words[i][1].map(function (c, k) { return c > 0 ? k : -1; }).filter(function (k) { return k > -1; });
+    }
+    function pick(i) {
+      var mine = inEssays(i);
+      buttons.forEach(function (b, j) {
+        b.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+        var shared = inEssays(j).filter(function (k) { return mine.indexOf(k) > -1; }).length;
+        b.classList.toggle('dim', j !== i && shared < mine.length / 2);
+      });
+      document.getElementById('web-title').textContent = data.words[i][0];
+      document.getElementById('web-text').textContent = 'Used ' + totals[i] + ' times across ' + mine.length + ' of ' + data.essays.length + ' essays.';
+      var ul = document.getElementById('web-list');
+      ul.textContent = '';
+      mine.sort(function (a, b) { return data.words[i][1][b] - data.words[i][1][a]; }).forEach(function (k) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = data.essays[k][1];
+        a.textContent = data.essays[k][0];
+        li.appendChild(a);
+        li.appendChild(document.createTextNode(' (' + data.words[i][1][k] + ')'));
+        ul.appendChild(li);
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
