@@ -345,3 +345,16 @@
     });
   }
 })();
+document.querySelectorAll('.builds-submenu').forEach(function (ul) {
+  var links = Array.prototype.slice.call(ul.querySelectorAll('a'));
+  for (var n = 1; n <= 8; n++) {
+    var has = links.some(function (a) { return a.textContent.trim() === 'Build ' + n; });
+    if (has) continue;
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = n === 4 ? 'build-4.html' : 'park-map.html';
+    a.textContent = 'Build ' + n;
+    li.appendChild(a);
+    ul.appendChild(li);
+  }
+});
