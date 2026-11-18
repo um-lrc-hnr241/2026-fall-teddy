@@ -568,3 +568,21 @@ document.querySelectorAll('nav[aria-label="Main"] > ul').forEach(function (ul) {
   box.appendChild(more);
   parent.appendChild(box);
 })();
+document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
+  var first = li.querySelector('a');
+  if (!first || first.textContent.trim() !== 'Build 5' || li.querySelector('.documents-submenu')) return;
+  first.href = 'build-5.html';
+  li.classList.add('documents-menu');
+  var sub = document.createElement('ul');
+  sub.className = 'documents-submenu';
+  sub.setAttribute('aria-label', 'Build 5 essays');
+  [['rebecca', 'Rebecca'], ['valentina', 'Valentina'], ['owen', 'Owen'], ['ravneet', 'Ravneet'], ['emily', 'Emily']].forEach(function (p) {
+    var item = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = 'build-5.html#' + p[0];
+    a.textContent = 'Build 5 - ' + p[1];
+    item.appendChild(a);
+    sub.appendChild(item);
+  });
+  li.appendChild(sub);
+});
