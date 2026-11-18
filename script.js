@@ -375,3 +375,30 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
   });
   li.appendChild(sub);
 });
+document.querySelectorAll('nav[aria-label="Main"] > ul').forEach(function (ul) {
+  Array.prototype.slice.call(ul.children).forEach(function (li) {
+    var a = li.querySelector('a');
+    if (a && /^(?:word-web|knotwork)\.html$/.test(a.getAttribute('href'))) ul.removeChild(li);
+  });
+  if (ul.querySelector('.play-menu')) return;
+  var li = document.createElement('li');
+  li.className = 'builds-menu play-menu';
+  var top = document.createElement('a');
+  top.href = 'play.html';
+  top.textContent = 'Play';
+  if (/play|knotwork|maze|word-web/.test(location.pathname)) top.setAttribute('aria-current', 'page');
+  li.appendChild(top);
+  var sub = document.createElement('ul');
+  sub.className = 'builds-submenu';
+  sub.setAttribute('aria-label', 'Games and activities');
+  [['Knotwork trap', 'knotwork.html'], ['The maze', 'maze.html'], ['Word web', 'word-web.html'], ['Guess who?', 'hosts.html#game-heading']].forEach(function (p) {
+    var item = document.createElement('li');
+    var link = document.createElement('a');
+    link.href = p[1];
+    link.textContent = p[0];
+    item.appendChild(link);
+    sub.appendChild(item);
+  });
+  li.appendChild(sub);
+  ul.insertBefore(li, ul.lastElementChild);
+});
