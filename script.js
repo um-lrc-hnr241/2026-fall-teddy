@@ -617,3 +617,89 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
     io.observe(stats);
   } else { run(); }
 })();
+(function () {
+  var box = document.querySelector('.maze-box, .trap');
+  if (!box) return;
+  var isMaze = box.classList.contains('maze-box');
+  var css = document.createElement('style');
+  css.textContent = '.game-layout{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;margin:0 0 1.5rem}' +
+    '.game-layout > .maze-box,.game-layout > .trap{flex:1 1 24rem;max-width:34rem;margin:0}' +
+    '.game-side{flex:1 1 16rem;max-width:30rem;padding:1.25rem 1.5rem;border:2px solid #8a5a2b;border-radius:1rem;background:#fff8e6}' +
+    '.game-side h2{font-size:1.15rem;margin:1.1rem 0 0.3rem}.game-side h2:first-child{margin-top:0}' +
+    '.game-side p{margin:0 0 0.4rem}.game-side ul{margin:0;padding-left:1.2rem}' +
+    '.game-side .record{font-size:1.2rem;font-weight:800;color:#2b5486}';
+  document.head.appendChild(css);
+  function h(tag, text) { var n = document.createElement(tag); if (text) n.textContent = text; return n; }
+  function link(text, href) { var a = document.createElement('a'); a.href = href; a.textContent = text; return a; }
+  var layout = document.createElement('div');
+  layout.className = 'game-layout';
+  box.parentNode.insertBefore(layout, box);
+  layout.appendChild(box);
+  var side = document.createElement('aside');
+  side.className = 'game-side';
+  side.setAttribute('aria-label', 'About this game');
+  layout.appendChild(side);
+
+  side.appendChild(h('h2', 'How to play'));
+  side.appendChild(h('p', isMaze
+    ? 'Use the arrow keys or W A S D, or the buttons under the maze. Walls block you, so some paths are dead ends. Reach the glowing square in the middle.'
+    : 'Press on the rope and drag along it. Each lap uses up some of your plan. If you stop, or wander off the rope, the trap talks back.'));
+  side.appendChild(h('h2', isMaze ? 'Why a maze?' : 'What Gell says'));
+  side.appendChild(h('p', isMaze
+    ? 'In our Build 2 essay, the maze leads Dolores to her own consciousness. Gell would ask a different question: how much of your path did you choose, and how much did the walls choose for you?'
+    : 'Gell describes an evil spirit so fascinated by Celtic knotwork that it loses interest in its own plan, a “paralysis of the will” (Gell 84). Nothing holds it in place. Its attention does the work.'));
+  var p = h('p');
+  p.appendChild(link(isMaze ? 'Read the Build 2 essay' : 'Read Emily’s Build 1 essay', isMaze ? 'build-2.html' : 'build-1.html#emily'));
+  side.appendChild(p);
+
+  side.appendChild(h('h2', 'Your record'));
+  var rec = h('p');
+  rec.className = 'record';
+  side.appendChild(rec);
+  var reset = h('button', 'Reset record');
+  reset.type = 'button';
+  reset.className = 'button';
+  side.appendChild(reset);
+
+  side.appendChild(h('h2', 'More to play'));
+  var ul = h('ul');
+  [['Knotwork trap', 'knotwork.html'], ['The maze', 'maze.html'], ['Word web', 'word-web.html'], ['Guess who?', 'hosts.html#game-heading'], ['All games', 'play.html']].forEach(function (g) {
+    if (location.pathname.indexOf(g[1].split('.')[0]) > -1 && g[1] !== 'play.html') return;
+    var li = h('li');
+    li.appendChild(link(g[0], g[1]));
+    ul.appendChild(li);
+  });
+  side.appendChild(ul);
+
+  var key = isMaze ? 'maze-record' : 'trap-record';
+  var data = { best: 0, count: 0 };
+  try { data = JSON.parse(localStorage.getItem(key)) || data; } catch (e) {}
+  function save() { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
+  function show() {
+    if (isMaze) rec.textContent = data.count ? 'Best: ' + data.best + ' steps. Mazes solved: ' + data.count : 'No mazes solved yet.';
+    else rec.textContent = data.count ? 'Times you forgot your plan: ' + data.count : 'You still remember your plan.';
+  }
+  show();
+  reset.addEventListener('click', function () { data = { best: 0, count: 0 }; save(); show(); });
+
+  if (!('MutationObserver' in window)) return;
+  if (isMaze) {
+    var msg = document.getElementById('msg');
+    if (msg) new MutationObserver(function () {
+      var m = /^You reached the center in (\d+) steps/.exec(msg.textContent);
+      if (!m) return;
+      var n = Number(m[1]);
+      data.count++;
+      if (!data.best || n < data.best) data.best = n;
+      save(); show();
+    }).observe(msg, { childList: true, characterData: true, subtree: true });
+  } else {
+    var label = document.getElementById('plan-label');
+    var was0 = false;
+    if (label) new MutationObserver(function () {
+      var zero = label.textContent.indexOf(': 0%') > -1;
+      if (zero && !was0) { data.count++; save(); show(); }
+      was0 = zero;
+    }).observe(label, { childList: true, characterData: true, subtree: true });
+  }
+})();
