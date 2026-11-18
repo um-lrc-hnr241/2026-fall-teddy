@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builds Map — Teddy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .maze-box{max-width:30rem;margin:0 0 1.5rem;padding:1.25rem;border:2px solid #8a5a2b;border-radius:1rem;background:#fff}
+    .maze-box svg{display:block;width:100%;height:auto;border-radius:0.75rem;background:#f4e4bf}
+    .walls{fill:none;stroke:#4a2c0f;stroke-width:4;stroke-linecap:round}
+    .can{transition:transform 0.12s ease}
+    .maze-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem 1rem;margin:0.75rem 0;font-weight:700}
+    .maze-msg{min-height:4.5rem;margin:0.5rem 0;font-weight:600}
+    .pad{display:grid;grid-template-columns:repeat(3,3.2rem);grid-template-rows:repeat(2,3.2rem);gap:0.4rem;justify-content:center;margin:0.75rem 0}
+    .pad button{font-size:1.3rem;padding:0}
+    .pad .up{grid-column:2;grid-row:1}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
+    @media (prefers-reduced-motion:reduce){.can{transition:none}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="site-title"><a href="index.html">Teddy</a></p>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li class="kids-menu">
+          <a href="hosts.html">Meet the kids</a>
+          <ul class="kids-submenu" aria-label="Meet each kid">
+            <li><a href="owen.html">Owen</a></li>
+            <li><a href="valentina.html">Valentina</a></li>
+            <li><a href="rebecca.html">Rebecca</a></li>
+            <li><a href="emily.html">Emily</a></li>
+            <li><a href="ravneet.html">Ravneet</a></li>
+            <li><a href="amelia.html">Amelia</a></li>
+          </ul>
+        </li>
+        <li class="builds-menu">
+          <a href="park-map.html">Builds</a>
+          <ul class="builds-submenu" aria-label="Build pages">
+            <li><a href="build-1.html">Build 1</a></li>
+            <li><a href="build-2.html">Build 2</a></li>
+            <li><a href="build-3.html">Build 3</a></li>
+          </ul>
+        </li>
+        <li><a href="programmer.html">Meet the interior designer</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <p class="eyebrow">Try it</p>
+    <h1>The maze</h1>
+    <div class="page-intro">
+      <p>Guide the tin can to the center of the maze. Use the arrow keys, W A S D, or the buttons below. A new maze is made every time.</p>
+    </div>
+
+    <div class="maze-box">
+      <svg id="maze" viewBox="0 0 400 400" role="img" aria-label="A square maze. Move the tin can from the top left corner to the center.">
+        <g id="goal">
+          <rect fill="none" stroke="#2b5486" stroke-width="3" x="0" y="0" width="30" height="30" id="g1"/>
+          <rect fill="#2b5486" opacity="0.25" x="0" y="0" width="18" height="18" id="g2"/>
+        </g>
+        <path class="walls" id="walls"/>
+        <g class="can" id="can">
+          <rect x="-8" y="-10" width="16" height="20" rx="3" fill="#c9ccd1" stroke="#555" stroke-width="2"/>
+          <line x1="-8" y1="-3" x2="8" y2="-3" stroke="#555" stroke-width="2"/>
+          <line x1="-8" y1="4" x2="8" y2="4" stroke="#555" stroke-width="2"/>
+        </g>
+      </svg>
+      <div class="maze-row"><span id="steps">Steps: 0</span><span id="bumps">Wall bumps: 0</span></div>
+      <p class="maze-msg" id="msg" aria-live="polite">Find the center.</p>
+      <div class="pad" role="group" aria-label="Move the tin can">
+        <button type="button" class="button up" id="b-up" aria-label="Up">&#8593;</button>
+        <button type="button" class="button left" id="b-left" aria-label="Left">&#8592;</button>
+        <button type="button" class="button down" id="b-down" aria-label="Down">&#8595;</button>
+        <button type="button" class="button right" id="b-right" aria-label="Right">&#8594;</button>
+      </div>
+      <button type="button" class="button" id="new-maze">New maze</button>
+    </div>
+
+    <p>The maze is the main symbol in our <a href="build-2.html">Build 2 essay</a>.</p>
+    <p><a href="play.html">Back to Play</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Made by our group. Welcome to the playroom.</p>
+  </footer>
+  <script src="script.js" defer></script>
+  <script>
+  (function () {
+    var N = 9, C = 44, OFF = 2, GOAL = 4;
+    var cells, px, py, steps, bumps, done;
+    var msg = document.getElementById('msg');
+    var can = document.getElementById('can');
+    function say(t) { msg.textContent = t; }
+    function build() {
+      cells = [];
+      for (var i = 0; i < N * N; i++) cells.push({ n: 1, e: 1, s: 1, w: 1, seen: 0 });
+      var stack = [[0, 0]];
+      cells[0].seen = 1;
+      while (stack.length) {
+        var cur = stack[stack.length - 1], x = cur[0], y = cur[1], opts = [];
+        if (y > 0 && !cells[(y - 1) * N + x].seen) opts.push(['n', x, y - 1, 's']);
+        if (x < N - 1 && !cells[y * N + x + 1].seen) opts.push(['e', x + 1, y, 'w']);
+        if (y < N - 1 && !cells[(y + 1) * N + x].seen) opts.push(['s', x, y + 1, 'n']);
+        if (x > 0 && !cells[y * N + x - 1].seen) opts.push(['w', x - 1, y, 'e']);
+        if (!opts.length) { stack.pop(); continue; }
+        var o = opts[Math.floor(Math.random() * opts.length)];
+        cells[y * N + x][o[0]] = 0;
+        cells[o[2] * N + o[1]][o[3]] = 0;
+        cells[o[2] * N + o[1]].seen = 1;
+        stack.push([o[1], o[2]]);
+      }
+      var d = '';
+      for (var yy = 0; yy < N; yy++) for (var xx = 0; xx < N; xx++) {
+        var c = cells[yy * N + xx], X = OFF + xx * C, Y = OFF + yy * C;
+        if (c.n) d += 'M' + X + ' ' + Y + 'h' + C;
+        if (c.w) d += 'M' + X + ' ' + Y + 'v' + C;
+        if (yy === N - 1 && c.s) d += 'M' + X + ' ' + (Y + C) + 'h' + C;
+        if (xx === N - 1 && c.e) d += 'M' + (X + C) + ' ' + Y + 'v' + C;
+      }
+      document.getElementById('walls').setAttribute('d', d);
+      var gx = OFF + GOAL * C, gy = OFF + GOAL * C;
+      var g1 = document.getElementById('g1'), g2 = document.getElementById('g2');
+      g1.setAttribute('x', gx + 7); g1.setAttribute('y', gy + 7);
+      g2.setAttribute('x', gx + 13); g2.setAttribute('y', gy + 13);
+      px = 0; py = 0; steps = 0; bumps = 0; done = false;
+      show();
+      say('Find the center.');
+    }
+    function show() {
+      can.style.transform = 'translate(' + (OFF + px * C + C / 2) + 'px,' + (OFF + py * C + C / 2) + 'px)';
+      document.getElementById('steps').textContent = 'Steps: ' + steps;
+      document.getElementById('bumps').textContent = 'Wall bumps: ' + bumps;
+    }
+    function go(dir) {
+      if (done) return;
+      var c = cells[py * N + px];
+      if (c[dir]) {
+        bumps++;
+        show();
+        if (bumps % 8 === 0) say('The walls decide where you can go. Who is acting here, you or the maze?');
+        return;
+      }
+      if (dir === 'n') py--; else if (dir === 's') py++; else if (dir === 'e') px++; else px--;
+      steps++;
+      show();
+      if (px === GOAL && py === GOAL) {
+        done = true;
+        say('You reached the center in ' + steps + ' steps. In our Build 2 essay, Dolores follows a voice to the center and finds her own consciousness. Did you choose your path, or did the maze choose it for you?');
+      }
+    }
+    var keys = { ArrowUp: 'n', ArrowDown: 's', ArrowLeft: 'w', ArrowRight: 'e', w: 'n', s: 's', a: 'w', d: 'e', W: 'n', S: 's', A: 'w', D: 'e' };
+    document.addEventListener('keydown', function (e) {
+      var dir = keys[e.key];
+      if (!dir || e.metaKey || e.ctrlKey || e.altKey) return;
+      e.preventDefault();
+      go(dir);
+    });
+    [['b-up', 'n'], ['b-down', 's'], ['b-left', 'w'], ['b-right', 'e']].forEach(function (p) {
+      document.getElementById(p[0]).addEventListener('click', function () { go(p[1]); });
+    });
+    document.getElementById('new-maze').addEventListener('click', build);
+    build();
+  })();
+  </script>
+</body>
+</html>
