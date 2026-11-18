@@ -586,3 +586,34 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
   });
   li.appendChild(sub);
 });
+(function () {
+  /* Home page numbers. Change these when new essays or builds are added: essays, builds, kids, games */
+  var vals = [21, 5, 6, 4];
+  var stats = document.querySelector('.stats');
+  if (!stats) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fresh = [];
+  Array.prototype.forEach.call(stats.querySelectorAll('.stat b'), function (old) {
+    var nb = document.createElement('b');
+    nb.textContent = '0';
+    old.parentNode.replaceChild(nb, old);
+    fresh.push(nb);
+  });
+  function run() {
+    fresh.forEach(function (el, i) {
+      if (reduce) { el.textContent = vals[i]; return; }
+      var start = Date.now();
+      (function tick() {
+        var t = Math.min(1, (Date.now() - start) / 1000);
+        el.textContent = Math.round(vals[i] * t);
+        if (t < 1) requestAnimationFrame(tick);
+      })();
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { run(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(stats);
+  } else { run(); }
+})();
