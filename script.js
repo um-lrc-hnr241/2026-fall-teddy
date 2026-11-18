@@ -261,3 +261,87 @@
   if (host.id === 'main') { host.appendChild(a); host.appendChild(b2); }
   else { host.parentNode.insertBefore(a, host.nextSibling); host.parentNode.insertBefore(b2, a.nextSibling); }
 })();
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Old links to the builds page now open the map */
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    if (/^(?:all-builds|our-builds)\.html$/.test(a.getAttribute('href'))) a.setAttribute('href', 'park-map.html');
+  });
+
+  /* Teddy bear tab icon */
+  if (!document.querySelector('link[rel~="icon"]')) {
+    var ic = document.createElement('link');
+    ic.rel = 'icon';
+    ic.href = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">\ud83e\uddf8</text></svg>');
+    document.head.appendChild(ic);
+  }
+
+  /* Polish: sticky header, smooth scroll, button press, roomier essay text */
+  var st = document.createElement('style');
+  st.textContent = (reduce ? '' : 'html{scroll-behavior:smooth}') +
+    '.site-header{position:sticky;top:0;z-index:30;transition:padding 0.25s ease,box-shadow 0.25s ease}' +
+    '.site-header.scrolled{padding-top:0.6rem;padding-bottom:0.6rem;box-shadow:0 0.4rem 1rem rgba(24,42,53,0.14)}' +
+    '::selection{background:#f7cf59;color:#182a35}' +
+    '.button{transition:transform 0.15s ease,box-shadow 0.15s ease}.button:hover{transform:translateY(-2px)}.button:active{transform:translateY(1px)}' +
+    '.essay{font-size:1.15rem;line-height:1.8}' +
+    '.read-progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:50;background:linear-gradient(90deg,#f7cf59,#f5a06b)}' +
+    '.read-time{margin:0 0 1rem;color:#465965;font-weight:700}' +
+    '.essay-steps{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.75rem;margin:1.5rem 0 0}';
+  document.head.appendChild(st);
+
+  /* Header shadow on scroll, and a reading progress bar on essay pages */
+  var header = document.querySelector('.site-header');
+  var bar = null;
+  if (document.querySelector('.essay')) {
+    bar = document.createElement('div');
+    bar.className = 'read-progress';
+    document.body.appendChild(bar);
+  }
+  function onScroll() {
+    if (header) header.classList.toggle('scrolled', window.scrollY > 20);
+    if (bar) {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%';
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  /* Reading time above each essay */
+  document.querySelectorAll('.essay').forEach(function (art) {
+    var words = 0;
+    Array.prototype.forEach.call(art.children, function (n) {
+      if (n.tagName === 'P') words += (n.textContent.match(/\S+/g) || []).length;
+    });
+    var p = document.createElement('p');
+    p.className = 'read-time';
+    p.textContent = '\u2248 ' + Math.max(1, Math.round(words / 200)) + ' min read';
+    art.parentNode.insertBefore(p, art);
+  });
+
+  /* Previous / next essay buttons on the tabbed build pages */
+  var tabs = document.querySelectorAll('[data-tabs] .tab');
+  var panels = document.querySelectorAll('[data-tabs] .tab-panel');
+  if (tabs.length > 1) {
+    Array.prototype.forEach.call(panels, function (panel, i) {
+      var row = document.createElement('div');
+      row.className = 'essay-steps';
+      function step(label, j) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'button';
+        b.textContent = label;
+        b.addEventListener('click', function () {
+          tabs[j].click();
+          window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        });
+        return b;
+      }
+      row.appendChild(i > 0 ? step('\u2190 ' + tabs[i - 1].textContent, i - 1) : document.createElement('span'));
+      if (i < tabs.length - 1) row.appendChild(step(tabs[i + 1].textContent + ' \u2192', i + 1));
+      panel.appendChild(row);
+    });
+  }
+})();
