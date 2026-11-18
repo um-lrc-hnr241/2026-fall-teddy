@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builds Map — Teddy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .trap{max-width:30rem;margin:0 0 1.5rem;padding:1.25rem;border:2px solid #8a5a2b;border-radius:1rem;background:#fff}
+    .trap svg{display:block;width:100%;height:auto;border-radius:0.75rem;background:#f4e4bf;touch-action:none;cursor:crosshair}
+    .rope-edge{fill:none;stroke:#4a2c0f;stroke-width:18;stroke-linecap:round;stroke-linejoin:round}
+    .rope{fill:none;stroke:#d9a441;stroke-width:11;stroke-linecap:round;stroke-linejoin:round}
+    .trap-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem 1rem;margin:0.75rem 0 0.5rem;font-weight:700}
+    .meter{height:0.9rem;border-radius:999px;background:#eadfc6;overflow:hidden}
+    .meter span{display:block;height:100%;width:100%;background:#a84712;transition:width 0.3s ease}
+    .trap-msg{min-height:4.5rem;margin:0.75rem 0;font-weight:600}
+    .trap-buttons{display:flex;flex-wrap:wrap;gap:0.5rem}
+    @media (prefers-reduced-motion:reduce){.meter span{transition:none}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="site-title"><a href="index.html">Teddy</a></p>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li class="kids-menu">
+          <a href="hosts.html">Meet the kids</a>
+          <ul class="kids-submenu" aria-label="Meet each kid">
+            <li><a href="owen.html">Owen</a></li>
+            <li><a href="valentina.html">Valentina</a></li>
+            <li><a href="rebecca.html">Rebecca</a></li>
+            <li><a href="emily.html">Emily</a></li>
+            <li><a href="ravneet.html">Ravneet</a></li>
+            <li><a href="amelia.html">Amelia</a></li>
+          </ul>
+        </li>
+        <li class="builds-menu">
+          <a href="park-map.html">Builds</a>
+          <ul class="builds-submenu" aria-label="Build pages">
+            <li><a href="build-1.html">Build 1</a></li>
+            <li><a href="build-2.html">Build 2</a></li>
+            <li><a href="build-3.html">Build 3</a></li>
+          </ul>
+        </li>
+        <li><a href="programmer.html">Meet the interior designer</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <p class="eyebrow">Try it</p>
+    <h1>Knotwork trap</h1>
+    <div class="page-intro">
+      <p>In Gell’s example, an evil spirit is so fascinated by Celtic knotwork that it forgets its own plan. Be the spirit. Press on the rope and trace it with your finger or mouse. You have a plan, and you can stop whenever you like.</p>
+    </div>
+
+    <div class="trap">
+      <svg id="knot" viewBox="0 0 360 360" role="img" aria-label="A looping rope pattern with many crossings. Trace it with a pointer.">
+        <path class="rope-edge" id="edge"/>
+        <path class="rope" id="rope"/>
+        <circle id="marker" r="11" fill="#6b4a8a" stroke="#fff" stroke-width="3"/>
+      </svg>
+      <div class="trap-row"><span id="laps">Laps: 0</span><span id="plan-label">Your plan: 100%</span></div>
+      <div class="meter" aria-hidden="true"><span id="plan-bar"></span></div>
+      <p class="trap-msg" id="msg" aria-live="polite">Press on the rope to begin.</p>
+      <div class="trap-buttons">
+        <button type="button" class="button" id="auto">Watch it happen</button>
+        <button type="button" class="button" id="again">Start over</button>
+      </div>
+    </div>
+
+    <p>Read the essays behind this: <a href="build-1.html#emily">Build 1, Emily</a> and the <a href="build-2.html">Build 2 group essay</a>.</p>
+    <p><a href="park-map.html">Back to the map</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Made by our group. Welcome to the playroom.</p>
+  </footer>
+  <script src="script.js" defer></script>
+  <script>
+  (function () {
+    var N = 720, TOL = 26, WIN = 30;
+    var pts = [];
+    for (var i = 0; i < N; i++) {
+      var t = i * 2 * Math.PI / N;
+      pts.push([180 + 150 * Math.sin(4 * t + 0.3), 180 + 150 * Math.sin(3 * t)]);
+    }
+    var d = 'M' + pts.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L') + ' Z';
+    document.getElementById('edge').setAttribute('d', d);
+    document.getElementById('rope').setAttribute('d', d);
+    var svg = document.getElementById('knot'), marker = document.getElementById('marker');
+    var msg = document.getElementById('msg'), bar = document.getElementById('plan-bar');
+    var idx = 0, net = 0, dragging = false, lastGain = 0, offSince = 0, stuckShown = false, autoTimer = null;
+    function place() { marker.setAttribute('cx', pts[idx][0]); marker.setAttribute('cy', pts[idx][1]); }
+    function wrap(k) { return ((k % N) + N) % N; }
+    function plan() { return Math.max(0, Math.round(100 - 100 * (net / N) / 4)); }
+    function say(text) { msg.textContent = text; }
+    function update() {
+      var p = plan();
+      document.getElementById('laps').textContent = 'Laps: ' + Math.floor(net / N);
+      document.getElementById('plan-label').textContent = 'Your plan: ' + p + '%';
+      bar.style.width = p + '%';
+      if (p === 0) say('You forgot your plan. Nothing held you in place, but you could not look away. Gell calls this a “paralysis of the will” (Gell 84).');
+      else if (p >= 75) say('Your plan: ' + p + '%. Just a little farther along the rope.');
+      else if (p >= 50) say('Your plan: ' + p + '%. There is always another strand to follow.');
+      else say('Your plan: ' + p + '%. Wait, what was the plan?');
+    }
+    function toSvg(e) {
+      var r = svg.getBoundingClientRect();
+      return [(e.clientX - r.left) * 360 / r.width, (e.clientY - r.top) * 360 / r.height];
+    }
+    function nearest(x, y, around, win) {
+      var best = -1, cost = 1e9;
+      for (var k = -win; k <= win; k++) {
+        var j = wrap(around + k), dx = pts[j][0] - x, dy = pts[j][1] - y, dist = Math.sqrt(dx * dx + dy * dy);
+        var c = dist + 0.3 * Math.abs(k);
+        if (dist <= TOL && c < cost) { cost = c; best = j; }
+      }
+      return best;
+    }
+    function down(e) {
+      if (autoTimer) return;
+      var q = toSvg(e), j = nearest(q[0], q[1], idx, N / 2);
+      if (j < 0) { say('Press right on the rope to begin.'); return; }
+      dragging = true; idx = j; lastGain = Date.now(); offSince = 0; stuckShown = false;
+      place(); update();
+      try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    function move(e) {
+      if (!dragging) return;
+      var q = toSvg(e), j = nearest(q[0], q[1], idx, WIN);
+      if (j < 0) { if (!offSince) offSince = Date.now(); return; }
+      offSince = 0;
+      var step = wrap(j - idx + N / 2) - N / 2;
+      if (step !== 0) {
+        idx = j; net = Math.max(0, net + step); place();
+        if (step > 0) { lastGain = Date.now(); stuckShown = false; update(); }
+      }
+    }
+    function up() { dragging = false; }
+    svg.addEventListener('pointerdown', down);
+    svg.addEventListener('pointermove', move);
+    svg.addEventListener('pointerup', up);
+    svg.addEventListener('pointercancel', up);
+    setInterval(function () {
+      if (!dragging || stuckShown || plan() === 0) return;
+      var now = Date.now();
+      if (offSince && now - offSince > 1500) { say('You lost the thread. Nothing is stopping you from leaving, so why do you want back on?'); stuckShown = true; }
+      else if (now - lastGain > 3000) { say('Stuck? Nothing is physically holding you. Your attention is the only thing in the coils.'); stuckShown = true; }
+    }, 400);
+    function reset() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      idx = 0; net = 0; dragging = false; stuckShown = false;
+      place(); update(); say('Press on the rope to begin.');
+    }
+    document.getElementById('again').addEventListener('click', reset);
+    document.getElementById('auto').addEventListener('click', function () {
+      reset();
+      autoTimer = setInterval(function () {
+        idx = wrap(idx + 6); net += 6; place(); update();
+        if (plan() === 0) { clearInterval(autoTimer); autoTimer = null; }
+      }, 16);
+    });
+    place();
+    update();
+    say('Press on the rope to begin.');
+  })();
+  </script>
+</body>
+</html>
