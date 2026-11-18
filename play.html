@@ -1,77 +1,166 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Builds Map — Teddy</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to main content</a>
+(function () {
+  var hero = document.querySelector('.playroom-hero');
+  if (!hero) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function h(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text) n.textContent = text;
+    return n;
+  }
+  var css = document.createElement('style');
+  css.textContent =
+    '.playroom-hero{position:relative;overflow:hidden}' +
+    '.playroom-hero > .hero-blocks{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none}' +
+    '.hero-wrap{position:absolute;transition:transform 0.25s ease-out}' +
+    '.hero-block{display:block;border:3px solid rgba(24,42,53,0.3);border-radius:0.6rem;box-shadow:0 0.3rem 0 rgba(24,42,53,0.18);cursor:pointer;pointer-events:auto;padding:0;transition:background-color 0.3s ease}' +
+    '.hero-block.bob{animation:bob 5s ease-in-out infinite}' +
+    '.hero-block.pop{animation:pop 0.5s ease}' +
+    '@keyframes bob{50%{transform:translateY(-0.8rem) rotate(6deg)}}' +
+    '@keyframes pop{50%{transform:scale(1.4) rotate(180deg)}}' +
+    '.hero-rotator{font-size:1.3rem;font-weight:700;margin:0.25rem 0}' +
+    '.hero-rotator strong{display:inline-block;min-width:7ch;color:#a84712;transition:opacity 0.3s ease}' +
+    '.poke{margin:0.75rem 0 0;font-weight:700;color:#465965}' +
+    '.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1rem;margin:2rem 0}' +
+    '.stat{padding:1rem;border:2px solid #8a5a2b;border-radius:0.9rem;background:#fff;text-align:center;font-weight:700}' +
+    '.stat b{display:block;font-size:2.4rem;line-height:1.1;color:#2b5486}' +
+    '.jump{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;margin:0 0 2rem}' +
+    '.jump a{display:block;padding:1.1rem;border-radius:1rem;color:#182a35;font-weight:800;font-size:1.15rem;text-decoration:none;box-shadow:0 0.3rem 0 rgba(24,42,53,0.2);transition:transform 0.15s ease,box-shadow 0.15s ease}' +
+    '.jump a:hover,.jump a:focus-visible{transform:translateY(-4px) rotate(-1deg);box-shadow:0 0.6rem 0 rgba(24,42,53,0.2)}' +
+    '.jump span{display:block;margin-top:0.3rem;font-weight:600;font-size:0.95rem}' +
+    '.ponder{margin:2rem 0;padding:1.5rem;border:3px dashed #8a5a2b;border-radius:1rem;background:#fff8e6}' +
+    '.ponder h2{margin-top:0}.ponder .q{font-size:1.35rem;font-weight:700;min-height:4.5rem}';
+  if (reduce) css.textContent += '.hero-block.bob{animation:none}';
+  document.head.appendChild(css);
 
-  <header class="site-header">
-    <p class="site-title"><a href="index.html">Teddy</a></p>
-    <nav aria-label="Main">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li class="kids-menu">
-          <a href="hosts.html">Meet the kids</a>
-          <ul class="kids-submenu" aria-label="Meet each kid">
-            <li><a href="owen.html">Owen</a></li>
-            <li><a href="valentina.html">Valentina</a></li>
-            <li><a href="rebecca.html">Rebecca</a></li>
-            <li><a href="emily.html">Emily</a></li>
-            <li><a href="ravneet.html">Ravneet</a></li>
-            <li><a href="amelia.html">Amelia</a></li>
-          </ul>
-        </li>
-        <li class="builds-menu">
-          <a href="park-map.html">Builds</a>
-          <ul class="builds-submenu" aria-label="Build pages">
-            <li><a href="build-1.html">Build 1</a></li>
-            <li><a href="build-2.html">Build 2</a></li>
-            <li><a href="build-3.html">Build 3</a></li>
-          </ul>
-        </li>
-        <li><a href="programmer.html">Meet the interior designer</a></li>
-      </ul>
-    </nav>
-  </header>
+  /* Floating blocks you can poke */
+  var colors = ['#f5a06b', '#f7cf59', '#b9dfb9', '#9cc3e6', '#e6a8c8'];
+  var spots = [[74, 10, 46], [88, 34, 60], [66, 58, 38], [90, 68, 50], [54, 78, 42], [80, 84, 34]];
+  var layer = h('div', 'hero-blocks');
+  var wraps = [];
+  var pokes = 0;
+  var pokeNote = h('p', 'poke', 'Psst. Those blocks are poke-able.');
+  spots.forEach(function (s, i) {
+    var wrap = h('div', 'hero-wrap');
+    wrap.style.left = s[0] + '%';
+    wrap.style.top = s[1] + '%';
+    var b = h('button', 'hero-block bob');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Poke a block');
+    b.style.width = s[2] + 'px';
+    b.style.height = s[2] + 'px';
+    b.style.backgroundColor = colors[i % colors.length];
+    b.style.animationDelay = (i * 0.7) + 's';
+    b.addEventListener('click', function () {
+      b.classList.remove('pop');
+      void b.offsetWidth;
+      b.classList.add('pop');
+      b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      pokes++;
+      pokeNote.textContent = pokes >= 10 ? 'Blocks poked: ' + pokes + '. You have the touch of a toy designer.' : 'Blocks poked: ' + pokes;
+    });
+    wrap.appendChild(b);
+    layer.appendChild(wrap);
+    wraps.push(wrap);
+  });
+  hero.insertBefore(layer, hero.firstChild);
+  hero.appendChild(pokeNote);
+  if (!reduce) {
+    hero.addEventListener('pointermove', function (e) {
+      var r = hero.getBoundingClientRect();
+      var dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+      wraps.forEach(function (w, i) {
+        var depth = (i % 3 + 1) * 16;
+        w.style.transform = 'translate(' + (dx * depth).toFixed(1) + 'px,' + (dy * depth).toFixed(1) + 'px)';
+      });
+    });
+  }
 
-  <main id="main">
-    <p class="eyebrow">Try it</p>
-    <h1>Play</h1>
-    <div class="page-intro">
-      <p>Little games that put Gell’s ideas in your hands. Pick one.</p>
-    </div>
-    <div class="card-grid">
-      <article class="card card-orange">
-        <h3>Knotwork trap</h3>
-        <p>Trace the rope and see how long it takes to forget your plan.</p>
-        <p><a href="knotwork.html">Play</a></p>
-      </article>
-      <article class="card card-blue">
-        <h3>The maze</h3>
-        <p>Guide the tin can to the center, with a new maze every time.</p>
-        <p><a href="maze.html">Play</a></p>
-      </article>
-      <article class="card card-green">
-        <h3>Word web</h3>
-        <p>Click a key word and see which essays use it.</p>
-        <p><a href="word-web.html">Explore</a></p>
-      </article>
-      <article class="card card-yellow">
-        <h3>Guess who?</h3>
-        <p>Match each baby photo to its kid.</p>
-        <p><a href="hosts.html#game-heading">Play</a></p>
-      </article>
-    </div>
-    <p><a href="park-map.html">Back to the map</a></p>
-  </main>
+  /* Rotating word under the title */
+  var title = hero.querySelector('h1');
+  var words = ['patterns', 'objects', 'mazes', 'memories', 'hosts', 'agency'];
+  var rot = h('p', 'hero-rotator', 'Come explore ');
+  var word = h('strong', null, words[0]);
+  rot.appendChild(word);
+  if (title && title.parentNode) title.parentNode.insertBefore(rot, title.nextSibling);
+  if (!reduce) {
+    var wi = 0;
+    setInterval(function () {
+      word.style.opacity = 0;
+      setTimeout(function () { wi = (wi + 1) % words.length; word.textContent = words[wi]; word.style.opacity = 1; }, 300);
+    }, 2200);
+  }
 
-  <footer class="site-footer">
-    <p>Made by our group. Welcome to the playroom.</p>
-  </footer>
-  <script src="script.js" defer></script>
-</body>
-</html>
+  /* Counters, quick links, and a question to think about */
+  var after = hero.nextSibling;
+  var parent = hero.parentNode;
+  var stats = h('section', 'stats');
+  stats.setAttribute('aria-label', 'Our site in numbers');
+  var nums = [[16, 'essays'], [4, 'builds so far'], [6, 'kids'], [4, 'games']];
+  var counters = nums.map(function (n) {
+    var box = h('div', 'stat');
+    var big = h('b', null, '0');
+    box.appendChild(big);
+    box.appendChild(document.createTextNode(n[1]));
+    stats.appendChild(box);
+    return { el: big, to: n[0] };
+  });
+  parent.insertBefore(stats, after);
+  function run() {
+    counters.forEach(function (c) {
+      if (reduce) { c.el.textContent = c.to; return; }
+      var start = Date.now();
+      (function tick() {
+        var t = Math.min(1, (Date.now() - start) / 1000);
+        c.el.textContent = Math.round(c.to * t);
+        if (t < 1) requestAnimationFrame(tick);
+      })();
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { run(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(stats);
+  } else { run(); }
+
+  var jump = h('section');
+  var jh = h('h2', null, 'Jump in');
+  jump.appendChild(jh);
+  var grid = h('div', 'jump');
+  [['Explore the map', 'Follow the trail through every build', 'park-map.html', '#f5a06b'],
+   ['Play a game', 'Knotwork, a maze, and more', 'play.html', '#f7cf59'],
+   ['Read the essays', 'Start with Build 1', 'build-1.html', '#b9dfb9'],
+   ['Meet the kids', 'Who made all this', 'hosts.html', '#9cc3e6']].forEach(function (j) {
+    var a = h('a', null, j[0]);
+    a.href = j[2];
+    a.style.backgroundColor = j[3];
+    a.appendChild(h('span', null, j[1]));
+    grid.appendChild(a);
+  });
+  jump.appendChild(grid);
+  parent.insertBefore(jump, after);
+
+  var questions = [
+    'If a pattern can stop a spirit from carrying out its plan, who is really in control?',
+    'Is the self something inside you, or something spread across the things and people around you?',
+    'When a tin can starts a whole new storyline, who is acting: the person or the can?',
+    'Can an artist’s intention keep going after the artist is gone?',
+    'If you know how a pattern is built, can you stop being fooled by it?',
+    'Does being aware of something mean you can control it?'
+  ];
+  var qi = Math.floor(Math.random() * questions.length);
+  var box = h('section', 'ponder');
+  box.appendChild(h('h2', null, 'Something to think about'));
+  var q = h('p', 'q', questions[qi]);
+  q.setAttribute('aria-live', 'polite');
+  box.appendChild(q);
+  var more = h('button', 'button', 'Another question');
+  more.type = 'button';
+  more.addEventListener('click', function () {
+    qi = (qi + 1 + Math.floor(Math.random() * (questions.length - 1))) % questions.length;
+    q.textContent = questions[qi];
+  });
+  box.appendChild(more);
+  parent.appendChild(box);
+})();
