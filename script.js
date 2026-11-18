@@ -358,3 +358,20 @@ document.querySelectorAll('.builds-submenu').forEach(function (ul) {
     ul.appendChild(li);
   }
 });
+document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
+  var first = li.querySelector('a');
+  if (!first || first.textContent.trim() !== 'Build 4' || li.querySelector('.documents-submenu')) return;
+  li.classList.add('documents-menu');
+  var sub = document.createElement('ul');
+  sub.className = 'documents-submenu';
+  sub.setAttribute('aria-label', 'Build 4 essays');
+  [['valentina', 'Valentina'], ['owen', 'Owen'], ['ravneet', 'Ravneet'], ['emily', 'Emily']].forEach(function (p) {
+    var item = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = 'build-4.html#' + p[0];
+    a.textContent = 'Build 4 - ' + p[1];
+    item.appendChild(a);
+    sub.appendChild(item);
+  });
+  li.appendChild(sub);
+});
