@@ -756,3 +756,103 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
     io.observe(stats);
   } else { run(); }
 })();
+(function () {
+  var box = document.querySelector('[data-tabs]');
+  if (!box || document.getElementById('rebecca')) return;
+  var list = box.querySelector('.tablist');
+  if (!list) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var paras = [
+    `Gell’s account of art points towards a form of reconsolidation that takes place partly outside the mind: through the “unfinished business” of patterned objects, the past remains open and is carried into the present, where identity continues to evolve through relationships with the material world. But one might object that reconsolidation does not fit Gell's conception of consciousness, as unfinished business seems to create fixity rather than revision. Reconsolidation is an idea dependent on change: the past travels into the present, where it is reshaped and goes on to affect the future. Gell's unfinished business, by contrast, is dependent on nothing ever being completed, and he describes patterns in terms of entanglement or being stuck. This relationship between person and pattern may turn out to be an ongoing loop, where the pattern and human being cannot break free. Be that as it may, I would argue that unfinished business is what keeps that loop open. Because the relationship never closes, the past remains exposed to new encounters, and each encounter can change how earlier ones are understood. Whether it leads to paralysis or revision depends on what the mind brings to it, which suggests that reconsolidation is shared between the person and the object, rather than belonging to either one alone.`,
+    `To answer this objection, it helps to clarify what reconsolidation actually requires. It is not that a relationship needs to be completed, but instead, just reopened. Unfinished business keeps the past open, and each return can change it. Take for example, the carpet in Gell’s reading. Gell describes the interaction between the carpet and its owner as "inexhaustible" (80) claiming it continues on for life. Although no owner can claim to have “entirely come to grips with its pattern,” the eye “singles out now this relation, this symmetry, now that” (80). One may wonder if noticing something new is the same as revising what came before. New perceptions can be seen as additions, rather than a change to previous interpretations. However, Gell's account of complex patterns suggests that new perceptions do change what had been seen before. The viewer of a pattern picks out a single shape, but then becomes “dimly aware that this ‘ground’ on which the shape is laid has the same shapes inscribed on it, but in reverse colour" (80). What the viewer first thought they had come to terms with changes, as they look into the pattern further. Each return to the carpet causes the owner to discover something new. Gell describes this exchange as a lag that produces not a frozen balance but “some renewed, residual, imbalance” (81). The relationship never ends, but is continuously reopened and continues to change. Closure produces fixity, while unfinished business sustains continuity.`,
+    `The example of apotropaic work meant to ward off a sort of evil demon seems to offer the strongest point for this objection. The demon confronting Celtic knotwork suffers a “paralysis of the will” (84) becoming stuck in the pattern. This may suggest that unfinished business leaves its subject fixed in place. What this point is missing is the goal that paralysis accomplishes. “Losing interest in whatever malevolent plan it had entertained previously” (84), the demon is not simply frozen; its past intention is displaced. What the pattern neutralizes is “the impetus of its malevolence” (86), a purpose the demon carried with it from the past. In this sense, the encounter with the pattern works like reconsolidation: the demon's past purpose is reopened in the present and does not come out the same. The trap, in other words, works by rewriting what it captures. The patterns themselves are not static either. The kolam threshold designs are rubbed out by passing feet and "renewed the next day” (85), suggesting that their protection depends on renewal rather than permanence. Even when Gell’s patterns appear to produce paralysis, they remain part of a continuous process in which the past is reopened and revised.`,
+    `This raises a question about the difference between the purposes of the pattern. If the same pattern can trap one mind and change another, what makes the difference? Gell’s discussion of kolam-based tattoos in India offers an answer. He explains that the tattoo serves as both a “map” (90), leading a dead woman to a loved one, and a “puzzle” (90) aiming to protect against punishments in the land of the dead. Therefore, the object's effect depends on who encounters it. The maze tattoo serves as a guide for women towards the land of the dead, where it is put back into use. By contrast, the same design also serves as a trap, for those who meet it that have no prior relationship with the pattern. As a result, unfinished business splits into two directions. The demons are held in place, while the woman uses the pattern to carry her forward. What separates paralysis from revision is not the pattern itself but the history between the pattern and the mind that meets it.`,
+    `At first glance, Gell’s unfinished business may seem disconnected from reconsolidation, since his pattern so often holds the mind in place. Yet, unfinished business is not the opposite of reconsolidation but its condition: because the relationship never closes, the past remains available to be reopened. Whether that reopening leads to paralysis or revision depends on what the mind brings to the encounter. The tattooed woman brings a lifetime with her design, so the pattern builds on her past. The demon, however, brings a malevolent plan, which the pattern overwrites. Even paralysis, then, is a kind of revision, one imposed on the mind rather than built from its own history. This suggests that reconsolidation, for Gell, is distributed between person and object, a view consistent with Gell's definition of the distributed person. Fixity, then, may not be the opposite of reconsolidation but one of its forms: when a mind meets a pattern with which it has no past. However, if one considers how Gell uses reconsolidation in order to explain why the same pattern can trap one mind but guide another, one can begin to see how reconsolidation might allow consciousness to intervene in the stream of physical causality to influence its course.`
+  ];
+
+  /* Rebecca's tab and essay */
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'tab';
+  btn.setAttribute('role', 'tab');
+  btn.setAttribute('data-for', 'rebecca');
+  btn.setAttribute('aria-selected', 'false');
+  btn.textContent = 'Rebecca';
+  list.insertBefore(btn, list.firstChild);
+  var panel = document.createElement('section');
+  panel.className = 'tab-panel';
+  panel.id = 'rebecca';
+  panel.setAttribute('role', 'tabpanel');
+  panel.setAttribute('aria-label', 'Build 4 by Rebecca');
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Rebecca';
+  panel.appendChild(h2);
+  var words = 0;
+  paras.forEach(function (p) { words += p.split(/\s+/).length; });
+  var rt = document.createElement('p');
+  rt.className = 'read-time';
+  rt.textContent = '\u2248 ' + Math.max(1, Math.round(words / 200)) + ' min read';
+  panel.appendChild(rt);
+  var art = document.createElement('article');
+  art.className = 'essay';
+  paras.forEach(function (p) {
+    var el = document.createElement('p');
+    el.textContent = p;
+    art.appendChild(el);
+  });
+  panel.appendChild(art);
+  box.insertBefore(panel, box.querySelector('.tab-panel'));
+
+  /* Fresh tab controller for all five tabs (clones drop the old listeners) */
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('.tab')).map(function (t) {
+    if (t === btn) return t;
+    var c = t.cloneNode(true);
+    t.parentNode.replaceChild(c, t);
+    return c;
+  });
+  var panels = Array.prototype.slice.call(box.querySelectorAll('.tab-panel'));
+  Array.prototype.forEach.call(box.querySelectorAll('.essay-steps'), function (r) { r.parentNode.removeChild(r); });
+  function show(id, focus) {
+    if (!panels.some(function (p) { return p.id === id; })) id = panels[0].id;
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-for') === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach(function (p) { p.hidden = p.id !== id; });
+  }
+  function go(id, focus) {
+    show(id, focus);
+    history.replaceState(null, '', '#' + id);
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { go(t.getAttribute('data-for')); });
+    t.addEventListener('keydown', function (e) {
+      var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+      if (j < 0) return;
+      e.preventDefault();
+      go(tabs[(j + tabs.length) % tabs.length].getAttribute('data-for'), true);
+    });
+  });
+  panels.forEach(function (p, i) {
+    var row = document.createElement('div');
+    row.className = 'essay-steps';
+    function step(label, j) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function () {
+        go(panels[j].id);
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      });
+      return b;
+    }
+    row.appendChild(i > 0 ? step('\u2190 ' + tabs[i - 1].textContent, i - 1) : document.createElement('span'));
+    if (i < panels.length - 1) row.appendChild(step(tabs[i + 1].textContent + ' \u2192', i + 1));
+    p.appendChild(row);
+  });
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
+  show(location.hash.slice(1));
+})();
