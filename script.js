@@ -703,3 +703,56 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
     }).observe(label, { childList: true, characterData: true, subtree: true });
   }
 })();
+(function () {
+  /* Build 4: add Rebecca to the menu list */
+  document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
+    var first = li.querySelector('a');
+    if (!first || first.textContent.trim() !== 'Build 4') return;
+    var sub = li.querySelector('.documents-submenu');
+    if (!sub || sub.querySelector('a[href="build-4.html#rebecca"]')) return;
+    var item = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = 'build-4.html#rebecca';
+    a.textContent = 'Build 4 - Rebecca';
+    item.appendChild(a);
+    sub.insertBefore(item, sub.firstChild);
+  });
+
+  /* Map: Build 4 now has five essays */
+  var pt = document.getElementById('panel-text');
+  if (pt && 'MutationObserver' in window) {
+    new MutationObserver(function () {
+      if (pt.textContent.indexOf('Four essays that each raise an objection') === 0) pt.textContent = pt.textContent.replace('Four essays', 'Five essays');
+    }).observe(pt, { childList: true, characterData: true, subtree: true });
+  }
+
+  /* Home page numbers: essays, builds, kids, games */
+  var vals = [22, 5, 6, 4];
+  var stats = document.querySelector('.stats');
+  if (!stats) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fresh = [];
+  Array.prototype.forEach.call(stats.querySelectorAll('.stat b'), function (old) {
+    var nb = document.createElement('b');
+    nb.textContent = '0';
+    old.parentNode.replaceChild(nb, old);
+    fresh.push(nb);
+  });
+  function run() {
+    fresh.forEach(function (el, i) {
+      if (reduce) { el.textContent = vals[i]; return; }
+      var start = Date.now();
+      (function tick() {
+        var t = Math.min(1, (Date.now() - start) / 1000);
+        el.textContent = Math.round(vals[i] * t);
+        if (t < 1) requestAnimationFrame(tick);
+      })();
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { run(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(stats);
+  } else { run(); }
+})();
