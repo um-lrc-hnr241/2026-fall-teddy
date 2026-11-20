@@ -856,3 +856,67 @@ document.querySelectorAll('.builds-submenu > li').forEach(function (li) {
   window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
   show(location.hash.slice(1));
 })();
+(function () {
+  /* Build 6: menu link */
+  document.querySelectorAll('.builds-submenu > li > a').forEach(function (a) {
+    if (a.textContent.trim() === 'Build 6') a.href = 'build-6.html';
+  });
+
+  /* Map: Build 6 pin and list */
+  var title = document.getElementById('panel-title');
+  var text = document.getElementById('panel-text');
+  var link = document.getElementById('panel-link');
+  if (title && text && link && 'MutationObserver' in window) {
+    var st = document.createElement('style');
+    st.textContent = '.pin.soon:not(.fog)[aria-label^="Build 6,"] .dot{opacity:1}';
+    document.head.appendChild(st);
+    new MutationObserver(function () {
+      if (title.textContent.indexOf('Build 6') !== 0) return;
+      text.textContent = 'The group essay that looks back across Builds 1 to 5 and asks how consciousness develops through art and agency.';
+      link.href = 'build-6.html';
+      link.textContent = 'Enter Build 6';
+      link.classList.remove('off');
+    }).observe(title, { childList: true, characterData: true, subtree: true });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.map-list li'), function (li) {
+    if (li.textContent.indexOf('Builds 6 to 8') !== 0) return;
+    li.textContent = '';
+    var a = document.createElement('a');
+    a.href = 'build-6.html';
+    a.textContent = 'Build 6';
+    li.appendChild(a);
+    var more = document.createElement('li');
+    more.textContent = 'Builds 7 and 8: still unexplored';
+    li.parentNode.insertBefore(more, li.nextSibling);
+  });
+
+  /* Home page numbers: essays, builds, kids, games */
+  var vals = [23, 6, 6, 4];
+  var stats = document.querySelector('.stats');
+  if (!stats) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fresh = [];
+  Array.prototype.forEach.call(stats.querySelectorAll('.stat b'), function (old) {
+    var nb = document.createElement('b');
+    nb.textContent = '0';
+    old.parentNode.replaceChild(nb, old);
+    fresh.push(nb);
+  });
+  function run() {
+    fresh.forEach(function (el, i) {
+      if (reduce) { el.textContent = vals[i]; return; }
+      var start = Date.now();
+      (function tick() {
+        var t = Math.min(1, (Date.now() - start) / 1000);
+        el.textContent = Math.round(vals[i] * t);
+        if (t < 1) requestAnimationFrame(tick);
+      })();
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { run(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(stats);
+  } else { run(); }
+})();
